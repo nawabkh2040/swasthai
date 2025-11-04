@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat - SwasthAI</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <div class="chat-container">
+        <!-- Header -->
+        <div class="chat-header">
+            <div class="header-left">
+                <span class="logo-icon">🏥</span>
+                <div>
+                    <h1>SwasthAI Assistant</h1>
+                    <p class="status">Online • Ready to help</p>
+                </div>
+            </div>
+            <div class="header-right">
+                <span class="user-info" id="userInfo">Loading...</span>
+                <button class="btn-icon" id="clearChatBtn" title="Clear chat history">🗑️</button>
+                <button class="btn-icon" id="logoutBtn" title="Logout">🚪</button>
+            </div>
+        </div>
+        
+        <!-- Messages Area -->
+        <div class="chat-messages" id="chatMessages">
+            <div class="loading-messages">
+                <div class="spinner"></div>
+                <p>Loading your conversation...</p>
+            </div>
+        </div>
+        
+        <!-- Input Area -->
+        <div class="chat-input-container">
+            <form id="chatForm">
+                <textarea 
+                    id="messageInput" 
+                    placeholder="Type your health question here... (e.g., 'I have a headache and fever')"
+                    rows="1"
+                    maxlength="2000"
+                ></textarea>
+                <button type="submit" class="btn-send" id="sendBtn" disabled>
+                    <span class="send-icon">➤</span>
+                </button>
+            </form>
+            <div class="input-hint">
+                💡 Tip: Be specific about your symptoms for better guidance
+            </div>
+        </div>
+    </div>
+    
+    <!-- Typing Indicator Template -->
+    <template id="typingTemplate">
+        <div class="message assistant typing-indicator">
+            <div class="message-avatar">🤖</div>
+            <div class="message-bubble">
+                <div class="typing-dots">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+        </div>
+    </template>
+    
+    <script src="/static/js/chat.js"></script>
+</body>
+</html>

@@ -2,7 +2,7 @@
 
 **AI-Powered Medical Assistant for Rural Healthcare**
 
-SwasthAI Chat is an intelligent, accessible medical support system designed to help people in rural India get instant health guidance through a friendly AI chatbot.
+SwasthAI Chat is an intelligent, accessible medical support system designed to help people in rural India get instant health guidance through a friendly AI chatbot powered by **LangChain + LangGraph**.
 
 ---
 
@@ -13,11 +13,12 @@ This MVP (Minimum Viable Product) is the first working version of the larger **S
 ### Key Features
 
 ✅ **User Authentication** - Secure signup and login system with JWT tokens  
-✅ **AI Medical Assistant** - Powered by LangChain + LangGraph for intelligent conversations  
+✅ **AI Medical Assistant** - Powered by LangChain + LangGraph for intelligent, context-aware conversations  
+✅ **Conversation Memory** - AI remembers context and previous messages  
 ✅ **Chat History** - All conversations are saved and can be revisited  
-✅ **Context-Aware Responses** - AI remembers previous messages in the conversation  
+✅ **Multiple AI Providers** - Support for OpenAI (GPT-3.5) or Google Gemini  
 ✅ **Rural-Friendly Design** - Simple, clean interface designed for everyone  
-✅ **Privacy & Security** - User data stored securely in local database  
+✅ **Privacy & Security** - User data stored securely in local SQLite database  
 ✅ **24/7 Availability** - Get health guidance anytime, anywhere  
 
 ---
@@ -28,6 +29,274 @@ This MVP (Minimum Viable Product) is the first working version of the larger **S
 |-----------|-----------|---------|
 | **Backend** | FastAPI | High-performance Python web framework |
 | **Frontend** | Jinja2 + HTML/CSS/JS | Server-side rendering with responsive design |
+| **Database** | SQLite3 | Lightweight local database for users and messages |
+| **AI Framework** | LangChain + LangGraph | Advanced AI reasoning and conversation management |
+| **AI Models** | OpenAI GPT-3.5 / Google Gemini | Natural language processing |
+| **Authentication** | JWT (JSON Web Tokens) | Secure user sessions |
+
+---
+
+## 📦 Installation & Setup
+
+### Prerequisites
+
+- **Python 3.13** (or 3.11+)
+- **Virtual Environment** (recommended)
+- **OpenAI API Key** or **Google Gemini API Key**
+
+### Step 1: Clone the Repository
+
+```bash
+git clone https://github.com/nawabkh2040-cloud/swasthai.git
+cd swasthai
+```
+
+### Step 2: Create Virtual Environment
+
+```bash
+# Create virtual environment
+python -m venv SwasthAI
+
+# Activate it (Windows)
+SwasthAI\Scripts\activate
+
+# Activate it (Linux/Mac)
+source SwasthAI/bin/activate
+```
+
+### Step 3: Install Dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+### Step 4: Configure Environment Variables
+
+1. Copy the `.env` file and edit it:
+
+```bash
+cp .env .env.local
+```
+
+2. Open `.env` and add your API key:
+
+```env
+# For OpenAI (Recommended)
+AI_PROVIDER=openai
+OPENAI_API_KEY=sk-your-actual-openai-api-key-here
+
+# OR for Google Gemini
+# AI_PROVIDER=gemini
+# GOOGLE_API_KEY=your-gemini-api-key-here
+
+# Change this to a strong secret key
+SECRET_KEY=your-super-secret-key-minimum-32-characters-long
+```
+
+**Get API Keys:**
+- **OpenAI**: [platform.openai.com/api-keys](https://platform.openai.com/api-keys)
+- **Google Gemini**: [makersuite.google.com/app/apikey](https://makersuite.google.com/app/apikey)
+
+### Step 5: Run the Application
+
+```bash
+python main.py
+```
+
+The server will start at: **http://localhost:8000**
+
+---
+
+## 🚀 Usage Guide
+
+### 1. **Access the Application**
+   - Open your browser and go to `http://localhost:8000`
+
+### 2. **Create an Account**
+   - Click "Sign Up"
+   - Enter your full name, username, and password
+   - Click "Create Account"
+
+### 3. **Start Chatting**
+   - You'll be automatically logged in and redirected to the chat page
+   - The AI assistant will greet you
+   - Type your health-related questions
+   - Get instant, helpful responses!
+
+### 4. **Example Questions**
+   - "I have a headache and mild fever since yesterday"
+   - "What are the symptoms of dengue?"
+   - "How can I prevent dehydration in summer?"
+   - "My child has a persistent cough, what should I do?"
+
+---
+
+## 🧠 How LangChain + LangGraph Works
+
+### Why LangChain?
+
+**LangChain** allows the AI to:
+- 🧩 **Chain thoughts** - Break down complex medical queries into steps
+- 🔗 **Connect knowledge** - Use multiple sources of information
+- 🎯 **Stay focused** - Maintain context throughout the conversation
+- 🛠️ **Use tools** - Potentially integrate with medical databases (future)
+
+### Why LangGraph?
+
+**LangGraph** provides:
+- 🗺️ **Conversation flow** - Manages the dialogue like a mind map
+- 📊 **State management** - Tracks what has been discussed
+- 🔄 **Context awareness** - Remembers previous messages
+- 🎨 **Explainable AI** - Clear reasoning paths
+
+Together, they create a **smart, reliable, and context-aware** medical assistant!
+
+---
+
+## 📁 Project Structure
+
+```
+swasthai/
+├── main.py                 # FastAPI application entry point
+├── ai_agent.py            # LangChain + LangGraph AI agent
+├── auth.py                # JWT authentication logic
+├── config.py              # Configuration settings
+├── database.py            # SQLAlchemy database models
+├── schemas.py             # Pydantic data models
+├── requirements.txt       # Python dependencies
+├── .env                   # Environment variables (IMPORTANT!)
+├── swasthai.db           # SQLite database (auto-created)
+│
+├── templates/             # Jinja2 HTML templates
+│   ├── index.html        # Landing page
+│   ├── signup.html       # Signup page
+│   ├── login.html        # Login page
+│   └── chat.html         # Chat interface
+│
+└── static/                # Static assets
+    ├── css/
+    │   └── style.css     # Styling
+    └── js/
+        ├── chat.js       # Chat functionality
+        ├── login.js      # Login logic
+        └── signup.js     # Signup logic
+```
+
+---
+
+## 🔒 Security Features
+
+- ✅ **Password Hashing** - Using bcrypt for secure password storage
+- ✅ **JWT Tokens** - Stateless authentication with expiration
+- ✅ **SQL Injection Protection** - SQLAlchemy ORM prevents attacks
+- ✅ **Input Validation** - Pydantic models validate all user inputs
+- ✅ **Environment Variables** - Sensitive data not hardcoded
+
+---
+
+## 🌟 Future Enhancements
+
+### Phase 2 Features
+- 🎥 **Video Consultations** - Connect with verified doctors
+- 🏥 **ABHA Integration** - Link with Ayushman Bharat Health ID
+- 🗣️ **Voice Input** - Speak your symptoms instead of typing
+- 🌐 **Multi-Language** - Hindi, English, and regional languages
+- 📱 **WhatsApp Bot** - Chat via WhatsApp for wider reach
+
+### Phase 3 Features
+- 📋 **Health Records** - Store and manage digital health records
+- 💊 **Prescription Generation** - AI-assisted prescriptions
+- 📊 **Health Analytics** - Track health trends over time
+- 🏪 **Medicine Delivery** - Integration with pharmacy services
+- 📱 **Progressive Web App** - Offline-first mobile experience
+
+---
+
+## 🐛 Troubleshooting
+
+### Issue: "OPENAI_API_KEY not set"
+**Solution:** Make sure you've created a `.env` file and added your API key.
+
+### Issue: "Cannot connect to database"
+**Solution:** The database is created automatically. Check write permissions in the project folder.
+
+### Issue: "Port 8000 already in use"
+**Solution:** Change the port in `.env`:
+```env
+PORT=8001
+```
+
+### Issue: "Module not found"
+**Solution:** Make sure your virtual environment is activated and dependencies are installed:
+```bash
+SwasthAI\Scripts\activate  # Windows
+pip install -r requirements.txt
+```
+
+---
+
+## 📚 API Documentation
+
+Once the server is running, visit:
+- **Interactive API Docs**: `http://localhost:8000/docs`
+- **Alternative Docs**: `http://localhost:8000/redoc`
+
+### Main Endpoints
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `POST` | `/api/signup` | Create new user account |
+| `POST` | `/api/login` | Login and get JWT token |
+| `GET` | `/api/user` | Get current user info |
+| `POST` | `/api/chat` | Send message to AI assistant |
+| `GET` | `/api/messages` | Get chat history |
+| `DELETE` | `/api/messages` | Clear chat history |
+| `GET` | `/api/greeting` | Get AI greeting message |
+
+---
+
+## 👥 Contributing
+
+We welcome contributions! Here's how you can help:
+
+1. **Fork** the repository
+2. **Create** a feature branch (`git checkout -b feature/AmazingFeature`)
+3. **Commit** your changes (`git commit -m 'Add some AmazingFeature'`)
+4. **Push** to the branch (`git push origin feature/AmazingFeature`)
+5. **Open** a Pull Request
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+---
+
+## 🙏 Acknowledgments
+
+- **LangChain** - For the amazing AI framework
+- **FastAPI** - For the modern web framework
+- **OpenAI / Google** - For powerful language models
+- **Rural healthcare workers** - For inspiring this project
+
+---
+
+## 📞 Contact & Support
+
+**Project Lead**: [@nawabkh2040-cloud](https://github.com/nawabkh2040-cloud)
+
+**Issues**: [GitHub Issues](https://github.com/nawabkh2040-cloud/swasthai/issues)
+
+---
+
+## 💡 Vision
+
+**To make healthcare accessible, intelligent, and empathetic — enabling every Indian village to get medical support through technology that listens, understands, and helps.**
+
+---
+
+Made with ❤️ for Rural India 🇮🇳
 | **Database** | SQLite3 | Lightweight local database |
 | **AI Engine** | LangChain + LangGraph | Advanced conversation flow and reasoning |
 | **LLM Provider** | OpenAI GPT-3.5 / Google Gemini | Language model for medical guidance |

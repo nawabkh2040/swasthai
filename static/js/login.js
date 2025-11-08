@@ -43,8 +43,10 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
                 window.location.href = '/chat';
             }, 500);
         } else {
+            // Get error message from response
+            const errorMessage = data.error || data.detail || 'Login failed. Please check your credentials.';
             errorMsg.className = 'alert alert-danger';
-            errorMsg.innerHTML = '<i class="bi bi-exclamation-circle me-2"></i>' + (data.detail || 'Login failed. Please check your credentials.');
+            errorMsg.innerHTML = '<i class="bi bi-exclamation-circle me-2"></i>' + errorMessage;
             submitBtn.disabled = false;
             submitBtn.innerHTML = '<i class="bi bi-box-arrow-in-right me-2"></i>Login';
         }

@@ -61,8 +61,10 @@ document.getElementById('signupForm').addEventListener('submit', async (e) => {
                 window.location.href = '/chat';
             }, 1500);
         } else {
+            // Get error message from response
+            const errorMessage = data.error || data.detail || 'Signup failed. Please try again.';
             errorMsg.className = 'alert alert-danger';
-            errorMsg.innerHTML = '<i class="bi bi-exclamation-circle me-2"></i>' + (data.detail || 'Signup failed. Please try again.');
+            errorMsg.innerHTML = '<i class="bi bi-exclamation-circle me-2"></i>' + errorMessage;
             submitBtn.disabled = false;
             submitBtn.innerHTML = '<i class="bi bi-person-plus me-2"></i>Create Account';
         }

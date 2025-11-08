@@ -289,7 +289,11 @@ async def health_check():
 @app.exception_handler(HTTPException)
 async def http_exception_handler(request: Request, exc: HTTPException):
     """Custom HTTP exception handler"""
-    return ErrorResponse(error=exc.detail, detail=str(exc.status_code))
+    from fastapi.responses import JSONResponse
+    return JSONResponse(
+        status_code=exc.status_code,
+        content={"error": exc.detail, "detail": str(exc.status_code)}
+    )
 
 
 if __name__ == "__main__":

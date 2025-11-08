@@ -1,0 +1,49 @@
+# robots.txt for SwasthAI - AI-Powered Healthcare Assistant
+# https://www.swasthai.live/
+
+# Allow all crawlers
+User-agent: *
+Allow: /
+
+# Disallow admin and private areas
+Disallow: /admin/
+Disallow: /api/
+Disallow: /__pycache__/
+Disallow: /SwasthAI/
+
+# Allow CSS and JS for better rendering
+Allow: /static/css/
+Allow: /static/js/
+Allow: /static/images/
+
+# Sitemap location
+Sitemap: https://www.swasthai.live/static/sitemap.xml
+
+# Crawl delay (optional - helps prevent server overload)
+Crawl-delay: 1
+
+# Specific rules for major search engines
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 0
+
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 1
+
+User-agent: Slurp
+Allow: /
+Crawl-delay: 1
+
+# Block bad bots
+User-agent: AhrefsBot
+Disallow: /
+
+User-agent: SemrushBot
+Disallow: /
+
+User-agent: DotBot
+Disallow: /
+
+User-agent: MJ12bot
+Disallow: /

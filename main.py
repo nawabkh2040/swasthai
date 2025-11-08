@@ -99,6 +99,20 @@ async def chat_page(request: Request):
     return templates.TemplateResponse("chat.html", {"request": request})
 
 
+@app.get("/robots.txt")
+async def robots():
+    """Serve robots.txt for search engines"""
+    from fastapi.responses import FileResponse
+    return FileResponse("static/robots.txt", media_type="text/plain")
+
+
+@app.get("/sitemap.xml")
+async def sitemap():
+    """Serve sitemap.xml for search engines"""
+    from fastapi.responses import FileResponse
+    return FileResponse("static/sitemap.xml", media_type="application/xml")
+
+
 # ==================== API ROUTES ====================
 
 @app.post("/api/signup", response_model=Token, status_code=status.HTTP_201_CREATED)

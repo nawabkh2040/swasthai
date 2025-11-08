@@ -73,12 +73,18 @@ class SwasthAIAgent:
         if settings.AI_PROVIDER == "gemini":
             if not settings.GOOGLE_API_KEY:
                 raise ValueError("GOOGLE_API_KEY not set in environment")
-            return ChatGoogleGenerativeAI(
-                model="gemini-pro",
-                google_api_key=settings.GOOGLE_API_KEY,
-                temperature=0.7,
-                max_output_tokens=500
-            )
+            try:
+                return ChatGoogleGenerativeAI(
+                    model="gemini-2.5-flash",  # Using stable gemini-2.5-flash model
+                    google_api_key=settings.GOOGLE_API_KEY,
+                    temperature=0.7,
+                    max_output_tokens=1000,
+                    convert_system_message_to_human=True  # Important for compatibility
+                )
+            except Exception as e:
+                print(f"Warning: Failed to initialize Gemini: {e}")
+                print("Falling back to a simple response system")
+                raise ValueError(f"Gemini initialization failed: {e}")
         else:  # default to OpenAI
             if not settings.OPENAI_API_KEY:
                 raise ValueError("OPENAI_API_KEY not set in environment")

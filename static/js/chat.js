@@ -103,11 +103,13 @@ function appendMessage(content, role, timestamp = null) {
     
     const avatar = document.createElement('div');
     avatar.className = 'message-avatar';
-    avatar.textContent = role === 'user' ? '👤' : '🤖';
+    avatar.innerHTML = role === 'user' ? '<i class="bi bi-person-fill"></i>' : '<i class="bi bi-robot"></i>';
     
     const bubble = document.createElement('div');
     bubble.className = 'message-bubble';
-    bubble.textContent = content;
+    
+    // Format the content with better HTML rendering
+    bubble.innerHTML = formatMessageContent(content, role);
     
     if (timestamp) {
         const time = document.createElement('div');
@@ -119,6 +121,69 @@ function appendMessage(content, role, timestamp = null) {
     messageDiv.appendChild(avatar);
     messageDiv.appendChild(bubble);
     chatMessages.appendChild(messageDiv);
+}
+
+// Format message content with better HTML rendering
+function formatMessageContent(content, role) {
+    // Replace emoji icons at the start
+    content = content.replace(/^(🚨|⚠️|ℹ️|✅|❌|💡|🔔)\s*/g, '<strong>$1</strong> ');
+    
+    // Convert **bold** to <strong>
+    content = content.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+    
+    // Convert *italic* to <em>
+    content = content.replace(/\*(.*?)\*/g, '<em>$1</em>');
+    
+    // Convert bullet points to proper lists
+    const lines = content.split('\n');
+    let formattedLines = [];
+    let inList = false;
+    let listItems = [];
+    
+    for (let i = 0; i < lines.length; i++) {
+        let line = lines[i].trim();
+        
+        // Check if line is a bullet point
+        if (line.match(/^[\*\-•]\s+/)) {
+            if (!inList) {
+                inList = true;
+                listItems = [];
+            }
+            // Remove bullet and add to list
+            listItems.push(line.replace(/^[\*\-•]\s+/, ''));
+        } else if (line.match(/^\d+\.\s+/)) {
+            // Numbered list
+            if (!inList) {
+                inList = true;
+                listItems = [];
+            }
+            listItems.push(line.replace(/^\d+\.\s+/, ''));
+        } else {
+            // Not a list item
+            if (inList) {
+                // Close previous list
+                formattedLines.push('<ul>' + listItems.map(item => `<li>${item}</li>`).join('') + '</ul>');
+                inList = false;
+                listItems = [];
+            }
+            
+            if (line) {
+                // Check if it's a heading (lines ending with :)
+                if (line.endsWith(':') && line.length < 60 && !line.includes('http')) {
+                    formattedLines.push(`<h4>${line}</h4>`);
+                } else {
+                    formattedLines.push(`<p>${line}</p>`);
+                }
+            }
+        }
+    }
+    
+    // Close any remaining list
+    if (inList) {
+        formattedLines.push('<ul>' + listItems.map(item => `<li>${item}</li>`).join('') + '</ul>');
+    }
+    
+    return formattedLines.join('');
 }
 
 // Format timestamp

@@ -1,7 +1,7 @@
 """
 Database models and connection setup for SwasthAI Chat MVP
 """
-from sqlalchemy import create_engine, Column, Integer, String, Text, DateTime, ForeignKey
+from sqlalchemy import create_engine, Column, Integer, String, Text, DateTime, ForeignKey, Boolean
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, relationship
 from datetime import datetime
@@ -28,13 +28,14 @@ class User(Base):
     username = Column(String(50), unique=True, nullable=False, index=True)
     full_name = Column(String(100), nullable=False)
     hashed_password = Column(String(255), nullable=False)
+    is_admin = Column(Boolean, default=False, nullable=False)
     created_at = Column(DateTime, default=datetime.utcnow)
     
     # Relationship
     messages = relationship("Message", back_populates="user", cascade="all, delete-orphan")
     
     def __repr__(self):
-        return f"<User(id={self.id}, username='{self.username}')>"
+        return f"<User(id={self.id}, username='{self.username}', is_admin={self.is_admin})>"
 
 
 class Message(Base):

@@ -19,6 +19,7 @@ Allow: /signup
 
 # Disallow admin and private areas
 Disallow: /admin/
+Disallow: /admin
 Disallow: /api/
 Disallow: /__pycache__/
 Disallow: /SwasthAI/

@@ -35,6 +35,14 @@ async function loadUserInfo() {
         if (response.ok) {
             const user = await response.json();
             userInfo.textContent = user.full_name;
+            
+            // Show admin button if user is an admin
+            if (user.is_admin) {
+                const adminBtn = document.getElementById('adminBtn');
+                if (adminBtn) {
+                    adminBtn.style.display = 'inline-flex';
+                }
+            }
         } else if (response.status === 401) {
             // Token invalid, redirect to login
             localStorage.removeItem('token');

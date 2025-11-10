@@ -17,6 +17,7 @@ from auth import (
     authenticate_user,
     create_access_token,
     get_current_user,
+    get_current_admin,
     get_password_hash
 )
 from schemas import (
@@ -159,6 +160,12 @@ async def help_page(request: Request):
 async def faq_page(request: Request):
     """FAQs page"""
     return templates.TemplateResponse("faq.html", {"request": request})
+
+
+@app.get("/admin", response_class=HTMLResponse)
+async def admin_page(request: Request):
+    """Admin Dashboard page (requires admin authentication via JS)"""
+    return templates.TemplateResponse("admin.html", {"request": request})
 
 
 # ==================== API ROUTES ====================
@@ -332,6 +339,132 @@ async def get_greeting(current_user: User = Depends(get_current_user)):
     agent = get_agent()
     greeting = agent.get_greeting()
     return {"greeting": greeting}
+
+
+# ==================== ADMIN API ROUTES ====================
+
+@app.get("/api/admin/users")
+async def get_all_users(
+    current_admin: User = Depends(get_current_admin),
+    db: Session = Depends(get_db)
+):
+    """
+    Get all users (Admin only)
+    """
+    users = db.query(User).order_by(User.created_at.desc()).all()
+    
+    users_data = []
+    for user in users:
+        message_count = db.query(Message).filter(Message.user_id == user.id).count()
+        users_data.append({
+            "id": user.id,
+            "username": user.username,
+            "full_name": user.full_name,
+            "is_admin": user.is_admin,
+            "created_at": user.created_at.isoformat(),
+            "total_messages": message_count
+        })
+    
+    return {
+        "users": users_data,
+        "total_users": len(users_data)
+    }
+
+
+@app.get("/api/admin/users/{user_id}/messages")
+async def get_user_messages(
+    user_id: int,
+    current_admin: User = Depends(get_current_admin),
+    db: Session = Depends(get_db)
+):
+    """
+    Get all messages for a specific user (Admin only)
+    """
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User not found"
+        )
+    
+    messages = db.query(Message).filter(
+        Message.user_id == user_id
+    ).order_by(Message.created_at.asc()).all()
+    
+    messages_data = [
+        {
+            "id": msg.id,
+            "role": msg.role,
+            "content": msg.content,
+            "created_at": msg.created_at.isoformat()
+        }
+        for msg in messages
+    ]
+    
+    return {
+        "user": {
+            "id": user.id,
+            "username": user.username,
+            "full_name": user.full_name
+        },
+        "messages": messages_data,
+        "total_messages": len(messages_data)
+    }
+
+
+@app.get("/api/admin/stats")
+async def get_admin_stats(
+    current_admin: User = Depends(get_current_admin),
+    db: Session = Depends(get_db)
+):
+    """
+    Get platform statistics (Admin only)
+    """
+    total_users = db.query(User).count()
+    total_messages = db.query(Message).count()
+    total_admins = db.query(User).filter(User.is_admin == True).count()
+    
+    # Get recent users (last 7 days)
+    from datetime import datetime, timedelta
+    seven_days_ago = datetime.utcnow() - timedelta(days=7)
+    new_users_week = db.query(User).filter(User.created_at >= seven_days_ago).count()
+    
+    return {
+        "total_users": total_users,
+        "total_messages": total_messages,
+        "total_admins": total_admins,
+        "new_users_this_week": new_users_week,
+        "avg_messages_per_user": round(total_messages / total_users, 2) if total_users > 0 else 0
+    }
+
+
+@app.delete("/api/admin/users/{user_id}")
+async def delete_user(
+    user_id: int,
+    current_admin: User = Depends(get_current_admin),
+    db: Session = Depends(get_db)
+):
+    """
+    Delete a user (Admin only)
+    """
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User not found"
+        )
+    
+    # Prevent deleting yourself
+    if user.id == current_admin.id:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Cannot delete your own account"
+        )
+    
+    db.delete(user)
+    db.commit()
+    
+    return {"message": f"User {user.username} deleted successfully"}
 
 
 # ==================== HEALTH CHECK ====================

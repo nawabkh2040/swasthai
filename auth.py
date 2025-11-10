@@ -92,3 +92,15 @@ def authenticate_user(db: Session, username: str, password: str) -> Optional[Use
     if not verify_password(password, user.hashed_password):
         return None
     return user
+
+
+def get_current_admin(
+    current_user: User = Depends(get_current_user)
+) -> User:
+    """Get the current authenticated admin user"""
+    if not current_user.is_admin:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Not authorized. Admin access required."
+        )
+    return current_user

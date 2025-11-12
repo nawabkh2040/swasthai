@@ -5,7 +5,8 @@
 SwasthAI Chat is an intelligent, accessible medical support system designed to help people in rural India get instant health guidance through a friendly AI chatbot powered by **LangChain + LangGraph**.
 
 ---
-
+🌐 Live Demo: https://www.swasthai.live/chat
+---
 ## 🎯 Project Overview
 
 This MVP (Minimum Viable Product) is the first working version of the larger **SwasthAI Rural Healthcare System**. It demonstrates how AI technology can make healthcare more accessible, especially in areas with limited medical infrastructure.
